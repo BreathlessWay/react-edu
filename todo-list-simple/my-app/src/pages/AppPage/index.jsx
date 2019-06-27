@@ -103,6 +103,21 @@ export default class AppPage extends Component {
     // const是es6语法, 用于声明常量, 声明的常量不可以再被赋值
     // {value, todoChecked...}是es6的解构语法, 可以从json或者数据中获取需要的字段
     const { value, todoList, currentFilter, error } = this.state;
+
+    // 使用filter遍历todoList, 根据不同的currentFilter, 来决定返回, 生成一个新的数组, 也就是我们筛选出来的结果
+    const filterTodoList = todoList.filter(todo => {
+      if (currentFilter === 'all') {
+        return todo;
+      }
+      if (currentFilter === 'complete') {
+        return todo.complete;
+      }
+      if (currentFilter === 'uncomplete') {
+        return !todo.complete;
+      }
+      return null;
+    });
+
     return <article className='todo-wrap'>
       <section className='todo-header'>
         {/*className也可传入变量 `` 为es6的语法，用来拼接字符串和变量*/}
@@ -126,7 +141,7 @@ export default class AppPage extends Component {
         不能直接写成this.handleChangeTodo(item)
         */}
         {
-          todoList.map(item => <li className='todo-list_item' key={item.id}>
+          filterTodoList.map(item => <li className='todo-list_item' key={item.id}>
             <p className='todo-list_item-detail'>{item.content}</p>
             <label className='todo-list_item-complete'>
               <input type="checkbox" checked={item.complete} onChange={() => this.handleChangeTodo(item)} className='todo-list_item-checkbox nes-checkbox'/>
@@ -144,6 +159,7 @@ export default class AppPage extends Component {
       */}
       <section className='todo-filter'>
         {
+          // 这里我们遍历的是筛选出来的数组filterTodoList
           filterList.map(item => <label htmlFor={item.type} className='todo-filter_item' key={item.id}>
             <input type="checkbox" checked={currentFilter === item.type} id={item.type} onChange={() => this.handleFilter(item.type)} className='todo-filter_item-checkbox nes-checkbox'/>
             <span className='todo-filter_item-label'>{item.label}</span>
