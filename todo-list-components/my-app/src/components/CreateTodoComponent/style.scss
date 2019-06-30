@@ -1,0 +1,21 @@
+// 首先通过@import引入其他样式表
+@import "../../static/css/variables";
+@import "../../static/css/base.scss";
+
+.todo-header {
+  // 使用在base.scss中创建的@mixin, 可以通过key: value的方式指定想要设置的值的
+  @include flex($justifyContent: space-between);
+
+  // scss语法之一, 嵌套, 字元素的选择器可以嵌套的写在父元素的选择器中
+  .todo-header_input {
+    width: 300px;
+    // 使用在variables.scss中声明的常量
+    padding: $base-padding;
+  }
+
+  .todo-header_btn {
+    // 使用在variables.scss中声明的常量
+    padding: $base-padding;
+    width: 100px;
+  }
+}
