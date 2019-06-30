@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './style.scss';
 
-// 首先创建一个筛选项目的数组
+// 首先创建一个筛选项目的数组, 之所以把这个数组放在外面, 是因为这个数据是固定的, 不会改变, 对于不会改变的固定数据我们不需要把它放在组件内部
 const filterList = [
   {
     id: 0,
