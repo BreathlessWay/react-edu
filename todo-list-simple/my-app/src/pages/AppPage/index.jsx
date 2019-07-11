@@ -19,7 +19,10 @@ const filterList = [
     label: '未完成'
   }
 ];
-
+// 按照要求react的自定义组件都必须大写开头
+// 使用es6的类语法extends继承父类Component, 然后通过export default默认导出当前组件
+// 使用class式创建组件, 组件必须继承react提供的父类Component
+// 并且要实现render方法, 方法返回一个jsx
 export default class AppPage extends Component {
   constructor (props) {
     super(props);
@@ -38,8 +41,8 @@ export default class AppPage extends Component {
       // 在state中创建一个currentFilter, 表示当前筛选的类型type
       currentFilter: 'all'
     };
-    // react的所有事件处理函数都要绑定this到当前作用域
-    // 或者你可以这样写绑定事件处理函数的this， 指向当前作用域
+    // react的所有事件处理函数都要绑定this到当前作用域，class不会帮你绑定this，必须要手动绑定
+    // 可以使用箭头函数，constructor中声明bind，或者public class fileds来绑定this
     this.handleChangeInput = this.handleChangeInput.bind(this);
   }
 
@@ -51,7 +54,7 @@ export default class AppPage extends Component {
     });
   };
 
-  // es7语法， 用于绑定this， 指向当前作用域
+  // public class fileds语法， 用于绑定this， 指向当前作用域
   // 我们在事件处理函数中执行更新待办事项的操作
   handleChangeTodo = (item) => {
     // 从state中取出todoList
@@ -73,7 +76,14 @@ export default class AppPage extends Component {
     });
   };
 
-// 待办创建onClick事件处理函数
+  // 当事件处理函数写成this.handleFilter(item.type)时，进行的柯里化
+  handleFilter=(type)=>()=>{
+    this.setState({
+      currentFilter: type
+    });
+  }
+
+  // 待办创建onClick事件处理函数
   handleSubmit = () => {
     // 获取当前输入的待办事项和待办事项列表
     const { todoList, value } = this.state;
@@ -124,7 +134,13 @@ export default class AppPage extends Component {
         <input type="text" placeholder='请输入待办事项' value={value} onChange={this.handleChangeInput} className={`todo-header_input nes-input ${error && 'is-error'}`}/>
         <button className='todo-header_btn nes-btn is-primary' type="button" onClick={this.handleSubmit}>提交</button>
       </section>
-      {/*react支持&&写法，当条件值为true时会渲染与后面的组件或值，当然你也可以写三目运算符*/}
+      {/*
+      error && 'is-error'与运算符, 是react中条件渲染的一种方式, 当error为truly时, 会返回'is-error', 为falsey时就不会返回
+      之所以能这样做，是因为在 JavaScript 中，true && expression 总是会返回 expression, 而 false && expression 总是会返回 false。
+      因此，如果条件是 true，&& 右侧的元素就会被渲染，如果是 false，React 会忽略并跳过它。
+      还可以用三元运算符 error ? 'is-error' : '', 一样是条件渲染
+      与运算符也可以用来条件渲染组件, 比如下面这种写法
+      */}
       {
         error && <span className="nes-text is-error">请输入待办事项</span>
       }
@@ -135,10 +151,14 @@ export default class AppPage extends Component {
           <span className='nes-text is-primary'>是否完成</span>
         </li>
         {/*
-        我们用map循环这个数组, 渲染整个待办列表, 和上面一样循环和变量要在{}内
-        依次设置key content checked
-        对于onChange事件我们通过使用一个箭头函数, 对处理函数handleChangeTodo传参, 传入循环项item, 一样也可以写成this.handleChangeTodo.bind(this, item)
-        不能直接写成this.handleChangeTodo(item)
+        接着我们用map遍历数组, 返回一个jsx
+        map方法会返回一个新的数组, 这里会返回一个jsx的数组
+        jsx中变量要用{}包起来, 这种对数据的遍历操作一样也要在{}中, 依次设置htmlFor id label
+        关于key, react对于渲染循环列表, 要求为每一项添加惟一值key来做渲染优化, 所以要求key是确定且唯一的值, 可以用id, 不推荐用循环的索引值
+        对于checked我们只要判断当前的currentFilter是否和数组中的某一项的type相等
+        对于onChange事件我们通过使用一个箭头函数, 对处理函数handleFilter传参, 传入循环项的type, 也可以写成this.handleFilter.bind(this, item.type)
+        不能直接写成this.handleFilter(item.type), 这样事件处理就直接执行了
+        如果要写成这种样子, 需要对事件处理函数柯里化
         */}
         {
           filterTodoList.map(item => <li className='todo-list_item' key={item.id}>
@@ -150,13 +170,6 @@ export default class AppPage extends Component {
           </li>)
         }
       </ul>
-      {/*
-      我们用map遍历数组, 返回一个jsx, 上一章提到过, jsx中变量要用{}包起来, 这种对数据的循环操作一样也要在{}中, 依次设置htmlFor id label
-      关于key， react对于渲染循环列表，要求为每一项添加惟一值key来做渲染优化， 所以要求key是确定且唯一的值， 可以用id，不推荐用循环的索引值
-      对于checked我们只要判断当前的currentFilter是否和数组中的某一项的type相等
-      对于onChange事件我们通过使用一个箭头函数, 对处理函数handleFilter传参, 传入循环项的type, 也可以写成this.handleFilter.bind(this, item.type)
-      不能直接写成this.handleFilter(item.type), 这样事件处理就直接执行了
-      */}
       <section className='todo-filter'>
         {
           // 这里我们遍历的是筛选出来的数组filterTodoList
