@@ -1,0 +1,9 @@
+// 首先通过@import引入其他样式表
+@import "../../static/css/variables.scss";
+@import "../../static/css/base.scss";
+
+.todo-filter {
+  font-size: $base-font-size*1.5;
+  @include flex($justifyContent: space-between);
+  padding-top: $base-padding*2;
+}

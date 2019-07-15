@@ -1,0 +1,18 @@
+@import "./variables.scss";
+
+.flex {
+  display: flex;
+}
+
+.text-center{
+  text-align: center;
+}
+
+@mixin flex(
+  $alignItems: $align-items-center,
+  $justifyContent: $justify-content-around
+) {
+  @extend .flex;
+  align-items: $alignItems;
+  justify-content: $justifyContent;
+}
