@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createPortal, unmountComponentAtNode } from 'react-dom';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 
 import './style.scss';
@@ -15,7 +15,6 @@ export default class DeleteTodoModalComponent extends Component {
   }
 
   componentWillUnmount () {
-    unmountComponentAtNode(this.el);
     document.body.removeChild(this.el);
   }
 
