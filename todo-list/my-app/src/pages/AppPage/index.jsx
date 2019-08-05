@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from '../../static/images/logo.svg';
+import React, { Component } from 'react';
+
+import CreateTodoComponent from '../../components/CreateTodoComponent';
+import TodoListComponent from '../../components/TodoListComponent';
+import FilterTodoComponent from '../../components/FilterTodoComponent';
+
 import './style.scss';
 
-function AppPage() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class AppPage extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      content: new Date()
+    };
+  }
 
-export default AppPage;
+  componentDidMount () {
+    this.timer = setInterval(() => {
+      this.setState({
+        content: new Date()
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.timer);
+  }
+
+  render () {
+    const { content } = this.state;
+    return <article className='todo-wrap'>
+      <CreateTodoComponent/>
+      {/*传入TodoListComponent内的props*/}
+      <TodoListComponent content={content.toLocaleString()}/>
+      <FilterTodoComponent/>
+    </article>;
+  }
+}
