@@ -1,19 +1,34 @@
 import React from 'react';
 
-const FilterTodoComponent = () => {
+const filterList = [
+  {
+    id: 0,
+    type: 'all',
+    label: '全部'
+  },
+  {
+    id: 1,
+    type: 'complete',
+    label: '已完成'
+  },
+  {
+    id: 2,
+    type: 'uncompleted',
+    label: '未完成'
+  }
+];
+
+const FilterTodoComponent = (props) => {
+
+  const { current, onFilter } = props;
+
   return <section className='todo-filter'>
-    <label htmlFor="all" className='todo-filter_item'>
-      <input type="checkbox" className='todo-filter_item-checkbox nes-checkbox'/>
-      <span className='todo-filter_item-label'>全部</span>
-    </label>
-    <label htmlFor="complete">
-      <input type="checkbox" id='complete' className='todo-filter_item-checkbox nes-checkbox'/>
-      <span className='todo-filter_item-label'>已完成</span>
-    </label>
-    <label htmlFor="uncomplete">
-      <input type="checkbox" id='uncomplete' className='todo-filter_item-checkbox nes-checkbox'/>
-      <span className='todo-filter_item-label'>未完成</span>
-    </label>
+    {
+      filterList.map(item => <label htmlFor={item.type} className='todo-filter_item' key={item.id}>
+        <input type="radio" id={item.type} className='todo-filter_item-checkbox nes-radio' name='filter' checked={current === item.type} onChange={() => onFilter(item.type)}/>
+        <span className='todo-filter_item-label'>{item.label}</span>
+      </label>)
+    }
   </section>;
 };
 

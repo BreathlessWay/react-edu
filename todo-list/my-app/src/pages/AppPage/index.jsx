@@ -10,29 +10,71 @@ export default class AppPage extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      content: new Date()
+      current: 'all',
+      list: [
+        {
+          content: '待办1',
+          completed: false,
+          id: 0
+        },
+        {
+          content: '待办2',
+          completed: true,
+          id: 1
+        }
+      ]
     };
   }
 
-  componentDidMount () {
-    this.timer = setInterval(() => {
-      this.setState({
-        content: new Date()
-      });
-    }, 1000);
-  }
+  handleAddTodo = (content) => {
+    const { list } = this.state;
 
-  componentWillUnmount () {
-    clearInterval(this.timer);
-  }
+    const todo = {
+      content,
+      completed: false,
+      id: list.length
+    };
+
+    list.push(todo);
+
+    this.setState({
+      list
+    });
+  };
+
+  handleChange = ({ id, completed }) => {
+    const { list } = this.state;
+
+    list.forEach(item => {
+      if (item.id === id) {
+        item.completed = completed;
+      }
+    });
+
+    this.setState({
+      list
+    });
+
+  };
+
+  handleFilter = (type) => {
+    this.setState({
+      current: type
+    });
+  };
 
   render () {
-    const { content } = this.state;
+    const { list, current } = this.state;
     return <article className='todo-wrap'>
-      <CreateTodoComponent/>
+      <CreateTodoComponent onAddTodo={this.handleAddTodo}/>
       {/*传入TodoListComponent内的props*/}
-      <TodoListComponent content={content.toLocaleString()}/>
-      <FilterTodoComponent/>
+      <TodoListComponent list={list} onChange={this.handleChange} current={current} renderTitle={<li className='todo-list_header'>
+        <span className='nes-text is-primary'>待办事项</span>
+        <span className='nes-text is-primary'>是否完成</span>
+      </li>}>
+        <h5 className='todo-list_title nes-text is-success'>待办列表</h5>
+      </TodoListComponent>
+      <FilterTodoComponent current={current} onFilter={this.handleFilter}/>
     </article>;
   }
 }

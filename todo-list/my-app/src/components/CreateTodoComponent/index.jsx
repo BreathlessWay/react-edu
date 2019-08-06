@@ -15,9 +15,12 @@ export default class CreateTodoComponent extends Component {
   };
 
   handleClick = () => {
-    this.setState({
-      value: 'add'
-    });
+    if (!this.state.value.trim()) {
+      alert('请输入待办事项');
+      return;
+    }
+
+    this.props.onAddTodo(this.state.value);
   };
 
   render () {
