@@ -1,0 +1,82 @@
+// 首先通过@import引入其他样式表
+@import "../../static/css/variables.scss";
+@import "../../static/css/base.scss";
+
+.todo-wrap {
+  // 使用在variables.scss中声明的常量
+  font-size: $base-font-size;
+  width: 500px;
+  margin: 80px auto;
+  // scss语法之一, 嵌套, 字元素的选择器可以嵌套的写在父元素的选择器中
+  .todo-header {
+    // 使用在base.scss中创建的@mixin, 可以通过key: value的方式指定想要设置的值的
+    @include flex($justifyContent: space-between);
+
+    .todo-header_input {
+      width: 300px;
+      // 使用在variables.scss中声明的常量
+      padding: $base-padding;
+    }
+
+    .todo-header_btn {
+      // 使用在variables.scss中声明的常量
+      padding: $base-padding;
+      width: 100px;
+    }
+  }
+
+  .todo-list_title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    // 使用在variables.scss中声明的常量, 可以对变量进行[+-*/]操作
+    padding: $base-padding*2 0 $base-padding;
+    // 继承在base.scss中创建的样式
+    @extend .text-center
+  }
+
+  .todo-list_content {
+    .todo-list_header {
+      // 使用在base.scss中创建的@mixin, 可以通过key: value的方式指定想要设置的值的
+      @include flex($justifyContent: space-between);
+      // 使用在variables.scss中声明的常量, 可以对变量进行[+-*/]操作
+      font-size: $base-font-size*1.2;
+      padding-bottom: $base-padding;
+      line-height: 1;
+      // + 是css3的语法, 自行了解
+      span + span {
+        // 继承在base.scss中创建的样式
+        @extend .text-center;
+        // 使用在variables.scss中声明的常量
+        width: $base-width;
+      }
+    }
+
+    .todo-list_item {
+      // 使用在base.scss中创建的@mixin, 可以通过key: value的方式指定想要设置的值的
+      @include flex($justifyContent: space-between);
+      // &父选择器标识符, 在这里就代表.todo-list_item
+      & + .todo-list_item {
+        // 使用在variables.scss中声明的常量
+        padding-top: $base-padding;
+      }
+
+      .todo-list_item-detail {
+        margin-bottom: 0;
+      }
+
+      .todo-list_item-complete {
+        flex-shrink: 0;
+        // 继承在base.scss中创建的样式
+        @extend .text-center;
+        // 使用在variables.scss中声明的常量
+        width: $base-width;
+      }
+    }
+  }
+
+  .todo-filter {
+    font-size: $base-font-size*1.5;
+    @include flex($justifyContent: space-between);
+    padding-top: $base-padding*2;
+  }
+}
