@@ -1,16 +1,18 @@
-import React, { Component } from 'react';
-
-import CreateTodoComponent from '../../components/CreateTodoComponent';
-import TodoListComponent from '../../components/TodoListComponent';
-import FilterTodoComponent from '../../components/FilterTodoComponent';
+import React, { Component, lazy, Suspense } from 'react';
+// 从react-router-dom中引入BrowserRouter和Route
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import SuspenseLoading from '../../components/SuspenseLoading';
 
 import './style.scss';
+
+const HomePage = lazy(() => import(/* webpackChunkName: "HomePage" */ '../HomePage'));
+const TodoDetailPage = lazy(() => import(/* webpackChunkName: "TodoDetailPage" */ '../TodoDetailPage'));
+const NotFoundPage = lazy(() => import(/* webpackChunkName: "NotFoundPage" */ '../NotFoundPage'));
 
 export default class AppPage extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      current: 'all',
       list: [
         {
           content: '待办1',
@@ -26,55 +28,36 @@ export default class AppPage extends Component {
     };
   }
 
-  handleAddTodo = (content) => {
-    const { list } = this.state;
-
-    const todo = {
-      content,
-      completed: false,
-      id: list.length
-    };
-
-    list.push(todo);
-
+  handleChangeList = (list) => {
     this.setState({
       list
-    });
-  };
-
-  handleChange = ({ id, completed }) => {
-    const { list } = this.state;
-
-    list.forEach(item => {
-      if (item.id === id) {
-        item.completed = completed;
-      }
-    });
-
-    this.setState({
-      list
-    });
-
-  };
-
-  handleFilter = (type) => {
-    this.setState({
-      current: type
     });
   };
 
   render () {
-    const { list, current } = this.state;
-    return <article className='todo-wrap'>
-      <CreateTodoComponent onAddTodo={this.handleAddTodo}/>
-      {/*传入TodoListComponent内的props*/}
-      <TodoListComponent list={list} onChange={this.handleChange} current={current} renderTitle={<li className='todo-list_header'>
-        <span className='nes-text is-primary'>待办事项</span>
-        <span className='nes-text is-primary'>是否完成</span>
-      </li>}>
-        <h5 className='todo-list_title nes-text is-success'>待办列表</h5>
-      </TodoListComponent>
-      <FilterTodoComponent current={current} onFilter={this.handleFilter}/>
-    </article>;
+    const { list } = this.state;
+    return <BrowserRouter>
+      <Route render={({ location, history }) => {
+        const { pathname } = location;
+        return <Suspense fallback={<SuspenseLoading/>}>
+          <article>
+            <nav className='nav-wrap'>
+            <span onClick={() => {
+              // 只有当不是首页时点击回到首页
+              if (pathname !== '/') {
+                history.replace('/');
+              }
+            }}>待办首页</span>
+            </nav>
+            <Switch>
+              {/*HomePage和TodoDetailPage通过Route的render挂载到路由中，并且必须将路由相关的props手动传入组件*/}
+              <Route path="/" exact render={(props) => <HomePage {...props} list={list} onChangeList={this.handleChangeList}/>}/>
+              <Route path="/detail/:id" component={props => <TodoDetailPage {...props} list={list} onChangeList={this.handleChangeList}/>}/>
+              <Route component={NotFoundPage}/>
+            </Switch>
+          </article>
+        </Suspense>;
+      }}/>
+    </BrowserRouter>;
   }
 }

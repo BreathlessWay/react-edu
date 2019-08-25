@@ -8,7 +8,7 @@ const filterList = [
   },
   {
     id: 1,
-    type: 'complete',
+    type: 'completed',
     label: '已完成'
   },
   {
