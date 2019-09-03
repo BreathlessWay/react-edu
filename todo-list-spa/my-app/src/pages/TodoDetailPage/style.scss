@@ -1,9 +1,0 @@
-// 首先通过@import引入其他样式表
-@import "../../static/css/variables.scss";
-@import "../../static/css/base.scss";
-
-.todo-detail {
-  font-size: $base-font-size;
-  width: 500px;
-  margin: 80px auto;
-}
