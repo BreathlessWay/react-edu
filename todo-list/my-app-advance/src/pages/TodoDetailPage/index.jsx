@@ -3,22 +3,21 @@ import ShowTodoDetailComponent from '../../components/ShowTodoDetailComponent';
 import EditTodoDetailComponent from '../../components/EditTodoDetailComponent';
 
 import './style.scss';
+import { TodoListContext } from '../../context';
 
 export default class TodoDetailPage extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isEditing: false,
-      todo: {
-        content: 'todo',
-        completed: false,
-        id: Date.now()
-      }
+      isEditing: false
     };
   }
 
+  static contextType = TodoListContext;
+
   componentDidMount () {
-    const { list, history, match } = this.props;
+    const { history, match } = this.props;
+    const { list } = this.context;
     const { id } = match.params;
     if (id === undefined) {
       history.goBack();
@@ -27,12 +26,7 @@ export default class TodoDetailPage extends Component {
     const todo = list.find(item => item.id === Number(id));
     if (!todo) {
       history.goBack();
-      return;
     }
-
-    this.setState({
-      todo
-    });
   }
 
   handleEdit = () => {
@@ -48,37 +42,40 @@ export default class TodoDetailPage extends Component {
   };
 
   handleSubmit = (item) => {
-    const { list, onChangeList } = this.props;
-    const { todo } = this.state;
-    list.forEach(data => {
-      if (data.id === todo.id) {
-        data.content = item.content;
-        data.completed = item.completed;
-      }
+    const { onChangeTodo } = this.context;
+    const { match } = this.props;
+    const { id } = match.params;
+    onChangeTodo({
+      id: Number(id),
+      ...item
     });
-    onChangeList(list);
     this.setState({
       isEditing: false
     });
   };
 
   handleDelete = () => {
-    const { list, match, onChangeList, history } = this.props;
+    const { match, history } = this.props;
     const { id } = match.params;
-    const _index = list.findIndex(_ => _.id === Number(id));
-    list.splice(_index, 1);
-    onChangeList(list);
+    const { onDeleteTodo } = this.context;
+    onDeleteTodo(id);
     history.goBack();
   };
 
   render () {
-    const { isEditing, todo } = this.state;
-    return <article className='todo-detail'>
+    const { isEditing } = this.state;
+    const { list } = this.context;
+    const { match } = this.props;
+    const { id } = match.params;
+
+    const todo = list.find(item => item.id === Number(id));
+
+    return todo ? <article className='todo-detail'>
       {
         isEditing ?
           <EditTodoDetailComponent content={todo.content} completed={todo.completed} onCancel={this.handleCancel} onSubmit={this.handleSubmit}/> :
           <ShowTodoDetailComponent onEdit={this.handleEdit} todo={todo} onDelete={this.handleDelete}/>
       }
-    </article>;
+    </article> : null;
   }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TodoListContext } from '../../context';
 
 export default class CreateTodoComponent extends Component {
   constructor (props) {
@@ -7,6 +8,8 @@ export default class CreateTodoComponent extends Component {
       value: ''
     };
   }
+
+  static contextType = TodoListContext;
 
   handelChange = (e) => {
     this.setState({
@@ -20,7 +23,16 @@ export default class CreateTodoComponent extends Component {
       return;
     }
 
-    this.props.onAddTodo(this.state.value);
+    const { onAddTodo } = this.context;
+    const todo = {
+      content: this.state.value,
+      completed: false,
+      id: Date.now()
+    };
+    onAddTodo(todo);
+    this.setState({
+      value: ''
+    });
   };
 
   render () {

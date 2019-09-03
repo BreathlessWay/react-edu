@@ -1,7 +1,9 @@
 import React, { Component, lazy, Suspense } from 'react';
 // 从react-router-dom中引入BrowserRouter和Route
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import SuspenseLoading from '../../components/SuspenseLoading';
+
+import { TodoListContext, defaultTodoList } from '../../context';
 
 import './style.scss';
 
@@ -13,51 +15,64 @@ export default class AppPage extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      list: [
-        {
-          content: '待办1',
-          completed: false,
-          id: 0
-        },
-        {
-          content: '待办2',
-          completed: true,
-          id: 1
-        }
-      ]
+      list: defaultTodoList.list
     };
   }
 
-  handleChangeList = (list) => {
+  handleChangeList = (todo) => {
+    const { list } = this.state;
+    list.forEach(_ => {
+      if (_.id === todo.id) {
+        _.completed = todo.completed;
+        _.content = todo.content;
+      }
+    });
+    this.setState({
+      list
+    });
+  };
+
+  handleAddTodo = (todo) => {
+    const { list } = this.state;
+    list.push(todo);
+    this.setState({
+      list
+    });
+  };
+
+  handleDeleteTodo = (id) => {
+    const { list } = this.state;
+    const index = list.findIndex(_ => _.id === id);
+    list.splice(index, 1);
     this.setState({
       list
     });
   };
 
   render () {
-    const { list } = this.state;
-    return <BrowserRouter>
-      <Route render={({ location, history }) => {
-        const { pathname } = location;
-        return <Suspense fallback={<SuspenseLoading/>}>
+    const value = {
+      list: this.state.list,
+      onAddTodo: this.handleAddTodo,
+      onChangeTodo: this.handleChangeList,
+      onDeleteTodo: this.handleDeleteTodo
+    };
+    return <TodoListContext.Provider value={value}>
+      <BrowserRouter>
+        <Suspense fallback={<SuspenseLoading/>}>
           <article>
             <nav className='nav-wrap'>
-            <span onClick={() => {
-              // 只有当不是首页时点击回到首页
-              if (pathname !== '/') {
-                history.replace('/');
-              }
-            }}>待办首页</span>
+              <Link to={'/'} replace={true}>待办首页</Link>
             </nav>
             <Switch>
               {/*HomePage和TodoDetailPage通过Route的render挂载到路由中，并且必须将路由相关的props手动传入组件*/}
-              <Route path="/" exact render={(props) => <HomePage {...props} list={list} onChangeList={this.handleChangeList}/>}/>
-              <Route path="/detail/:id" component={props => <TodoDetailPage {...props} list={list} onChangeList={this.handleChangeList}/>}/>
+              <Route path="/" exact component={HomePage}/>
+              <Route path="/detail/:id" component={TodoDetailPage}/>
               <Route component={NotFoundPage}/>
             </Switch>
           </article>
-        </Suspense>;
-      }}/>
-    </BrowserRouter>;
+        </Suspense>
+      </BrowserRouter>
+    </TodoListContext.Provider>;
+
   }
 }

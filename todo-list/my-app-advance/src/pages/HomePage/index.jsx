@@ -4,6 +4,8 @@ import CreateTodoComponent from '../../components/CreateTodoComponent';
 import TodoListComponent from '../../components/TodoListComponent';
 import FilterTodoComponent from '../../components/FilterTodoComponent';
 
+import { TodoListContext } from '../../context';
+
 import './style.scss';
 
 export default class HomePage extends Component {
@@ -14,30 +16,7 @@ export default class HomePage extends Component {
     };
   }
 
-  handleAddTodo = (content) => {
-    const { list } = this.props;
-
-    const todo = {
-      content,
-      completed: false,
-      id: list.length
-    };
-
-    list.push(todo);
-    this.props.onChangeList(list);
-  };
-
-  handleChange = ({ id, completed }) => {
-    const { list } = this.props;
-
-    list.forEach(item => {
-      if (item.id === id) {
-        item.completed = completed;
-      }
-    });
-
-    this.props.onChangeList(list);
-  };
+  static contextType = TodoListContext;
 
   handleFilter = (type) => {
     this.setState({
@@ -46,12 +25,11 @@ export default class HomePage extends Component {
   };
 
   render () {
-    const { list } = this.props;
     const { current } = this.state;
     return <article className='todo-wrap'>
-      <CreateTodoComponent onAddTodo={this.handleAddTodo}/>
+      <CreateTodoComponent/>
       {/*传入TodoListComponent内的props*/}
-      <TodoListComponent list={list} onChange={this.handleChange} current={current} renderTitle={<li className='todo-list_header'>
+      <TodoListComponent current={current} renderTitle={<li className='todo-list_header'>
         <span className='nes-text is-primary'>待办事项</span>
         <span className='nes-text is-primary'>是否完成</span>
       </li>}>

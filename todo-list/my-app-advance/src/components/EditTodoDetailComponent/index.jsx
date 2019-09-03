@@ -22,7 +22,6 @@ export default class EditTodoDetailComponent extends Component {
     this.setState({
       completed: !completed
     });
-
   };
 
   render () {
