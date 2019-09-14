@@ -15,48 +15,49 @@ export default class AppPage extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      list: defaultTodoList.list
+      todo: {
+        list: defaultTodoList.list,
+        onAddTodo: this.handleAddTodo,
+        onChangeTodo: this.handleChangeList,
+        onDeleteTodo: this.handleDeleteTodo
+      }
     };
   }
 
-  handleChangeList = (todo) => {
-    const { list } = this.state;
+  handleChangeList = (item) => {
+    const { todo } = this.state;
+    const { list } = todo;
     list.forEach(_ => {
-      if (_.id === todo.id) {
-        _.completed = todo.completed;
-        _.content = todo.content;
+      if (_.id === item.id) {
+        _.completed = item.completed;
+        _.content = item.content;
       }
     });
     this.setState({
-      list
+      todo
     });
   };
 
-  handleAddTodo = (todo) => {
-    const { list } = this.state;
-    list.push(todo);
+  handleAddTodo = (item) => {
+    const { todo } = this.state;
+    todo.list.push(item);
     this.setState({
-      list
+      todo
     });
   };
 
   handleDeleteTodo = (id) => {
-    const { list } = this.state;
-    const index = list.findIndex(_ => _.id === id);
+    const { todo } = this.state;
+    const { list } = todo;
+    const index = list.findIndex(_ => _.id === Number(id));
     list.splice(index, 1);
     this.setState({
-      list
+      todo
     });
   };
 
   render () {
-    const value = {
-      list: this.state.list,
-      onAddTodo: this.handleAddTodo,
-      onChangeTodo: this.handleChangeList,
-      onDeleteTodo: this.handleDeleteTodo
-    };
-    return <TodoListContext.Provider value={value}>
+    return <TodoListContext.Provider value={this.state.todo}>
       <BrowserRouter>
         <Suspense fallback={<SuspenseLoading/>}>
           <article>
@@ -73,6 +74,5 @@ export default class AppPage extends Component {
         </Suspense>
       </BrowserRouter>
     </TodoListContext.Provider>;
-
   }
 }

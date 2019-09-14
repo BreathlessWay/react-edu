@@ -4,8 +4,6 @@ import CreateTodoComponent from '../../components/CreateTodoComponent';
 import TodoListComponent from '../../components/TodoListComponent';
 import FilterTodoComponent from '../../components/FilterTodoComponent';
 
-import { TodoListContext } from '../../context';
-
 import './style.scss';
 
 export default class HomePage extends Component {
@@ -15,8 +13,6 @@ export default class HomePage extends Component {
       current: 'all'
     };
   }
-
-  static contextType = TodoListContext;
 
   handleFilter = (type) => {
     this.setState({
