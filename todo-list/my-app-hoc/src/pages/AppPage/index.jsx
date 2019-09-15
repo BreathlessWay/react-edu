@@ -1,12 +1,10 @@
 import React, { Component, lazy, Suspense } from 'react';
-
-import { Provider } from 'mobx-react';
 // 从react-router-dom中引入BrowserRouter和Route
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import SuspenseLoading from '../../components/SuspenseLoading';
 import ErrorBoundaryComponent from '../../components/ErrorBoundaryComponent';
 
-import store from '../../store';
+import { TodoListContext, defaultTodoList } from '../../context';
 
 import './style.scss';
 
@@ -15,9 +13,53 @@ const TodoDetailPage = lazy(() => import(/* webpackChunkName: "TodoDetailPage" *
 const NotFoundPage = lazy(() => import(/* webpackChunkName: "NotFoundPage" */ '../NotFoundPage'));
 
 export default class AppPage extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      todo: {
+        list: defaultTodoList.list,
+        onAddTodo: this.handleAddTodo,
+        onChangeTodo: this.handleChangeList,
+        onDeleteTodo: this.handleDeleteTodo
+      }
+    };
+  }
+
+  handleChangeList = (item) => {
+    const { todo } = this.state;
+    const { list } = todo;
+    list.forEach(_ => {
+      if (_.id === item.id) {
+        _.completed = item.completed;
+        _.content = item.content;
+      }
+    });
+    this.setState({
+      todo
+    });
+  };
+
+  handleAddTodo = (item) => {
+    const { todo } = this.state;
+    todo.list.push(item);
+    this.setState({
+      todo
+    });
+  };
+
+  handleDeleteTodo = (id) => {
+    const { todo } = this.state;
+    const { list } = todo;
+    const index = list.findIndex(_ => _.id === Number(id));
+    list.splice(index, 1);
+    this.setState({
+      todo
+    });
+  };
+
   render () {
     return <ErrorBoundaryComponent>
-      <Provider store={store}>
+      <TodoListContext.Provider value={this.state.todo}>
         <BrowserRouter>
           <Suspense fallback={<SuspenseLoading/>}>
             <article>
@@ -33,7 +75,7 @@ export default class AppPage extends Component {
             </article>
           </Suspense>
         </BrowserRouter>
-      </Provider>
+      </TodoListContext.Provider>
     </ErrorBoundaryComponent>;
   }
 }

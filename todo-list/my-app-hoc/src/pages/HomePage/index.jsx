@@ -7,6 +7,19 @@ import FilterTodoComponent from '../../components/FilterTodoComponent';
 import './style.scss';
 
 export default class HomePage extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      current: 'all'
+    };
+  }
+
+  handleFilter = (type) => {
+    this.setState({
+      current: type
+    });
+  };
+
   render () {
     const { current } = this.state;
     return <article className='todo-wrap'>
@@ -18,7 +31,7 @@ export default class HomePage extends Component {
       </li>}>
         <h5 className='todo-list_title nes-text is-success'>待办列表</h5>
       </TodoListComponent>
-      <FilterTodoComponent/>
+      <FilterTodoComponent current={current} onFilter={this.handleFilter}/>
     </article>;
   }
 }

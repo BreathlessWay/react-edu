@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
-
 import ShowTodoDetailComponent from '../../components/ShowTodoDetailComponent';
 import EditTodoDetailComponent from '../../components/EditTodoDetailComponent';
 
+import todoContextHoc from '../../Hoc/todoContextHoc';
+
 import './style.scss';
 
-@inject('store')
-@observer
 class TodoDetailPage extends Component {
   constructor (props) {
     super(props);
@@ -77,4 +75,4 @@ class TodoDetailPage extends Component {
   }
 }
 
-export default TodoDetailPage
+export default todoContextHoc(TodoDetailPage);

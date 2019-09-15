@@ -6,7 +6,7 @@
 
 > todo-list/my-app-advance目录下为React高级指引(1-2)部分的源码
 
-> todo-list/my-app-mobx目录下为React高级指引(3-10)部分的源码
+> todo-list/my-app-hoc目录下为React高级指引(3)部分的源码
 
 将项目下载下来之后需要在对应的源码目录下 `npm install` 安装相关依赖, `npm start` 启动项目
 
