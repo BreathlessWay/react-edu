@@ -1,0 +1,10 @@
+// 首先通过@import引入其他样式表
+@import "../../static/css/variables.scss";
+@import "../../static/css/base.scss";
+
+.nav-wrap {
+  background: lighten($base-gray-2, 30%);
+  padding: $base-padding $base-padding*3;
+  font-weight: bold;
+  font-size: 16px;
+}

@@ -1,0 +1,26 @@
+@import "../../static/css/variables.scss";
+@import "../../static/css/base.scss";
+
+.todo-detail_edit {
+  .todo-detail_edit-title {
+    font-size: $base-font-size+10;
+    font-weight: bold;
+  }
+
+  .todo-detail_edit-input {
+    margin: $base-margin*3 0;
+  }
+
+  .todo-detail_edit-checkbox {
+    @include flex($justifyContent: flex-start);
+    margin-bottom: $base-margin*2;
+  }
+
+  .todo-detail_edit-btn {
+    @include flex;
+
+    .nes-btn {
+      width: $base-btn-width;
+    }
+  }
+}
