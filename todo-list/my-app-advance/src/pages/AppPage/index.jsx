@@ -59,7 +59,7 @@ export default class AppPage extends Component {
 
   render () {
     return <ErrorBoundaryComponent>
-      <TodoListContext.Provider value={this.state.tod}>
+      <TodoListContext.Provider value={this.state.todo}>
         <BrowserRouter>
           <Suspense fallback={<SuspenseLoading/>}>
             <article>
