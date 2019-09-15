@@ -17,7 +17,8 @@ class TodoDetailPage extends Component {
   }
 
   componentDidMount () {
-    const { history, match, list } = this.props;
+    const { history, match, store } = this.props;
+    const { list } = store.todo;
     const { id } = match.params;
     if (id === undefined) {
       history.goBack();
@@ -42,9 +43,10 @@ class TodoDetailPage extends Component {
   };
 
   handleSubmit = (item) => {
-    const { match, onChangeTodo } = this.props;
+    const { match, store } = this.props;
+    const { changeTodo } = store.todo;
     const { id } = match.params;
-    onChangeTodo({
+    changeTodo({
       id: Number(id),
       ...item
     });
@@ -54,15 +56,17 @@ class TodoDetailPage extends Component {
   };
 
   handleDelete = () => {
-    const { match, history, onDeleteTodo } = this.props;
+    const { match, history, store } = this.props;
+    const { deleteTodo } = store.todo;
     const { id } = match.params;
-    onDeleteTodo(id);
+    deleteTodo(id);
     history.goBack();
   };
 
   render () {
     const { isEditing } = this.state;
-    const { match, list } = this.props;
+    const { match, store } = this.props;
+    const { list } = store.todo;
     const { id } = match.params;
 
     const todo = list.find(item => item.id === Number(id));

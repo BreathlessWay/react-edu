@@ -8,11 +8,10 @@ import './style.scss';
 
 export default class HomePage extends Component {
   render () {
-    const { current } = this.state;
     return <article className='todo-wrap'>
       <CreateTodoComponent/>
       {/*传入TodoListComponent内的props*/}
-      <TodoListComponent current={current} renderTitle={<li className='todo-list_header'>
+      <TodoListComponent renderTitle={<li className='todo-list_header'>
         <span className='nes-text is-primary'>待办事项</span>
         <span className='nes-text is-primary'>是否完成</span>
       </li>}>

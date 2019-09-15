@@ -84,7 +84,18 @@ export default class TodoStore {
       uncompletedCount: 0
     };
     count.completedCount = this.list.filter(todo => todo.completed).length;
-    count.uncompletedCount = count.allCount = count.completedCount;
+    count.uncompletedCount = count.allCount - count.completedCount;
     return count;
+  }
+
+  @computed
+  get currentTypeCount () {
+    if (this.current === 'completed') {
+      return this.todoCount.completedCount;
+    }
+    if (this.current === 'uncompleted') {
+      return this.todoCount.uncompletedCount;
+    }
+    return this.todoCount.allCount;
   }
 }

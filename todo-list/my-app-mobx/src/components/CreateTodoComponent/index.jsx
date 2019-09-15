@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import todoContextHoc from '../../Hoc/todoContextHoc';
+import { inject, observer } from 'mobx-react';
 
+@inject('store')
+@observer
 class CreateTodoComponent extends Component {
   constructor (props) {
     super(props);
@@ -21,13 +23,13 @@ class CreateTodoComponent extends Component {
       return;
     }
 
-    const { onAddTodo } = this.props;
+    const { addTodo } = this.props.store.todo;
     const todo = {
       content: this.state.value,
       completed: false,
       id: Date.now()
     };
-    onAddTodo(todo);
+    addTodo(todo);
     this.setState({
       value: ''
     });
@@ -42,4 +44,4 @@ class CreateTodoComponent extends Component {
   }
 }
 
-export default todoContextHoc(CreateTodoComponent);
+export default CreateTodoComponent
