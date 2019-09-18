@@ -1,5 +1,7 @@
 import TodoStore from './todoStore';
 
-export default {
-  todo: new TodoStore()
+export default class Store {
+  constructor(){
+    this.todo = new TodoStore()
+  }
 };
