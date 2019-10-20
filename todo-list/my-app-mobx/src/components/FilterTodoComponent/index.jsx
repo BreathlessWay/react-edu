@@ -27,7 +27,7 @@ const FilterTodoComponent = (props) => {
     {
       filterList.map(item => <label htmlFor={item.type} className='todo-filter_item' key={item.id}>
         <input type="radio" id={item.type} className='todo-filter_item-checkbox nes-radio' name='filter' checked={current === item.type} onChange={() => changeCurrent(item.type)}/>
-        <span className='todo-filter_item-label'>{item.label}{todoCount[`${item.type}Count`]}</span>
+        <span className='todo-filter_item-label'>{item.label}({todoCount[`${item.type}Count`]})</span>
       </label>)
     }
   </section>;
